@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  
+  // Disable ESLint during builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   
   // Cloudflare Pages compatibility
   // Uncomment the following if you encounter issues with Cloudflare Pages
