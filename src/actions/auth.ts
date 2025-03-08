@@ -197,7 +197,10 @@ export async function signUp(formData: FormData) {
       return { error: error.message };
     }
     
-    return { success: 'Check your email for the confirmation link!' };
+    return { 
+      success: 'Check your email for the confirmation link!',
+      message: 'If you don\'t receive an email, please check your spam folder or try again.'
+    };
   } catch (error: any) {
     return { error: error.message || 'An error occurred during sign up' };
   }
