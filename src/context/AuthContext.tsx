@@ -34,26 +34,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         setSession(sessionData.session);
         
-        // Try to get verified user using getUser() if available, otherwise fall back to session user
+        // Get verified user using getUser() for better security
         if (sessionData.session) {
-          // Check if getUser method exists on the supabase client
-          if (typeof (supabase.auth as any).getUser === 'function') {
-            try {
-              const { data: userData, error: userError } = await (supabase.auth as any).getUser();
-              if (userError) {
-                console.error('Error getting user:', userError);
-                setUser(sessionData.session.user);
-              } else {
-                setUser(userData.user);
-              }
-            } catch (error) {
-              console.error('Error calling getUser:', error);
-              setUser(sessionData.session.user);
-            }
+          const { data: userData, error: userError } = await supabase.auth.getUser();
+          if (userError) {
+            console.error('Error getting user:', userError);
           } else {
-            // Fallback to session user if getUser is not available
-            console.info('getUser method not available, using session user');
-            setUser(sessionData.session.user);
+            setUser(userData.user);
           }
         } else {
           setUser(null);
@@ -72,25 +59,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, currentSession) => {
         setSession(currentSession);
         
-        // Try to get verified user using getUser() if available, otherwise fall back to session user
+        // Get verified user using getUser() when auth state changes
         if (currentSession) {
-          // Check if getUser method exists on the supabase client
-          if (typeof (supabase.auth as any).getUser === 'function') {
-            try {
-              const { data: userData, error: userError } = await (supabase.auth as any).getUser();
-              if (userError) {
-                console.error('Error getting user on auth change:', userError);
-                setUser(currentSession.user);
-              } else {
-                setUser(userData.user);
-              }
-            } catch (error) {
-              console.error('Error calling getUser on auth change:', error);
-              setUser(currentSession.user);
-            }
+          const { data: userData, error: userError } = await supabase.auth.getUser();
+          if (userError) {
+            console.error('Error getting user on auth change:', userError);
+            setUser(null);
           } else {
-            // Fallback to session user if getUser is not available
-            setUser(currentSession.user);
+            setUser(userData.user);
           }
         } else {
           setUser(null);
