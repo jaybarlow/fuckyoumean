@@ -12,44 +12,62 @@ export default function LoginPage() {
   const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(true);
   const [email, setEmail] = useState('');
   const [showDevOptions, setShowDevOptions] = useState(false);
+  const [redirectPath, setRedirectPath] = useState('');
 
   useEffect(() => {
     // Check if Supabase is configured
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
-    if (!supabaseUrl || 
-        !supabaseAnonKey || 
-        supabaseUrl === 'https://your-project-id.supabase.co' || 
-        supabaseAnonKey === 'your-actual-anon-key') {
+    if (!supabaseUrl || !supabaseAnonKey) {
       setIsSupabaseConfigured(false);
+    }
+    
+    // Check for redirect parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get('redirect');
+    if (redirect) {
+      setRedirectPath(redirect);
     }
   }, []);
 
   async function handleSubmit(formData: FormData) {
+    setIsLoading(true);
     setError(null);
     setSuccess(null);
-    setIsLoading(true);
     
-    // Save email for dev options
-    const emailValue = formData.get('email') as string;
-    setEmail(emailValue);
-
     try {
+      const email = formData.get('email') as string;
+      setEmail(email);
+      
+      let result;
+      
       if (isSignUp) {
-        const result = await signUp(formData);
-        if (result?.error) {
-          setError(result.error);
-        } else if (result?.success) {
-          setSuccess(result.success);
+        result = await signUp(formData);
+        
+        if (result.success) {
           setShowDevOptions(true);
         }
       } else {
-        const result = await signIn(formData);
-        if (result?.error) {
-          setError(result.error);
+        result = await signIn(formData);
+        
+        if (result.success) {
+          // Redirect to the original path or profile
+          window.location.href = redirectPath || '/profile';
+          return;
         }
-        // No need to handle success case for sign in as it redirects
+      }
+      
+      if (result.error) {
+        setError(result.error);
+        if (result.message) {
+          setSuccess(result.message);
+        } else {
+          setSuccess(null);
+        }
+      } else if (result.success) {
+        setSuccess(result.success);
+        setError(null);
       }
     } catch (e: any) {
       setError(e.message || 'An error occurred');
@@ -176,6 +194,13 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 required
               />
+              {!isSignUp && (
+                <div className="mt-1 text-right">
+                  <Link href="/forgot-password" className="text-sm text-purple-400 hover:text-purple-300">
+                    Forgot password?
+                  </Link>
+                </div>
+              )}
             </div>
             
             <button

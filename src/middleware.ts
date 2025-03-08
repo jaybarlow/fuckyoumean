@@ -12,77 +12,67 @@ const isValidUrl = (url: string) => {
   }
 };
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  
-  // Check if Supabase URL and anon key are valid
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  // If credentials are invalid, just continue without auth checks
-  if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
-    console.error('Invalid Supabase credentials in middleware');
-    return res;
-  }
-  
-  // Create a Supabase client
+export async function middleware(request: NextRequest) {
+  // Create a Supabase client configured to use cookies
   const supabase = createServerClient(
-    supabaseUrl,
-    supabaseAnonKey,
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         get(name: string) {
-          return req.cookies.get(name)?.value;
+          return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: any) {
-          res.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          // This is used for setting cookies in the browser which we don't need in middleware
         },
         remove(name: string, options: any) {
-          res.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
+          // This is used for removing cookies in the browser which we don't need in middleware
         },
       },
     }
   );
-  
-  try {
-    // Check if the user is authenticated
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
 
-    // Protected routes that require authentication
-    const protectedRoutes = ['/profile'];
-    const isProtectedRoute = protectedRoutes.some(route => 
-      req.nextUrl.pathname.startsWith(route)
-    );
+  // Get the user's session
+  const { data: { session } } = await supabase.auth.getSession();
 
-    // If accessing a protected route without being authenticated, redirect to login
-    if (isProtectedRoute && !session) {
-      const redirectUrl = new URL('/login', req.url);
-      redirectUrl.searchParams.set('redirectedFrom', req.nextUrl.pathname);
-      return NextResponse.redirect(redirectUrl);
-    }
+  // Check if the user is authenticated
+  const isAuthenticated = !!session;
 
-    // If already logged in and trying to access login page, redirect to profile
-    if (session && req.nextUrl.pathname === '/login') {
-      return NextResponse.redirect(new URL('/profile', req.url));
-    }
-  } catch (error) {
-    console.error('Error in middleware:', error);
+  // Define protected routes
+  const protectedRoutes = ['/profile', '/dashboard'];
+  const isProtectedRoute = protectedRoutes.some(route => 
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // Define auth routes (login, signup, etc.)
+  const authRoutes = ['/login', '/forgot-password', '/auth/reset-password'];
+  const isAuthRoute = authRoutes.some(route => 
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // If the route is protected and the user is not authenticated, redirect to login
+  if (isProtectedRoute && !isAuthenticated) {
+    const redirectUrl = new URL('/login', request.url);
+    redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
-  return res;
+  // If the user is authenticated and trying to access an auth route, redirect to profile
+  if (isAuthRoute && isAuthenticated) {
+    return NextResponse.redirect(new URL('/profile', request.url));
+  }
+
+  // Otherwise, continue with the request
+  return NextResponse.next();
 }
 
-// Specify which routes this middleware should run on
+// Only run middleware on specific routes
 export const config = {
-  matcher: ['/profile/:path*', '/login'],
+  matcher: [
+    '/profile/:path*',
+    '/dashboard/:path*',
+    '/login',
+    '/forgot-password',
+    '/auth/reset-password',
+  ],
 }; 
