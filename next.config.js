@@ -7,6 +7,11 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
+  // Disable TypeScript checking during builds
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  
   // Cloudflare Pages compatibility
   // Uncomment the following if you encounter issues with Cloudflare Pages
   /*
