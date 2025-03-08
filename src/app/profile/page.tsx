@@ -7,6 +7,9 @@ export default async function ProfilePage() {
   const supabase = createServerSupabaseClient();
   
   // Get the user session
+  // NOTE: In server components, we're using getSession() directly.
+  // For better security in production, consider implementing a server-side
+  // verification of the session using Supabase Admin or Edge Functions.
   const { data: { session } } = await supabase.auth.getSession();
   
   // If no session, redirect to login

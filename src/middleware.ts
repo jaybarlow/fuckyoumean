@@ -33,6 +33,9 @@ export async function middleware(request: NextRequest) {
   );
 
   // Get the user's session
+  // NOTE: In middleware, we have to use getSession() as getUser() would require
+  // an additional network request. For middleware, this is acceptable as we're
+  // only checking if the user is authenticated, not using the user data directly.
   const { data: { session } } = await supabase.auth.getSession();
 
   // Check if the user is authenticated

@@ -21,24 +21,81 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get session from Supabase
-    const getSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error('Error getting session:', error);
+    // Get session and verified user from Supabase
+    const getSessionAndUser = async () => {
+      try {
+        // Get session
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          console.error('Error getting session:', sessionError);
+          setIsLoading(false);
+          return;
+        }
+        
+        setSession(sessionData.session);
+        
+        // Try to get verified user using getUser() if available, otherwise fall back to session user
+        if (sessionData.session) {
+          // Check if getUser method exists on the supabase client
+          if (typeof (supabase.auth as any).getUser === 'function') {
+            try {
+              const { data: userData, error: userError } = await (supabase.auth as any).getUser();
+              if (userError) {
+                console.error('Error getting user:', userError);
+                setUser(sessionData.session.user);
+              } else {
+                setUser(userData.user);
+              }
+            } catch (error) {
+              console.error('Error calling getUser:', error);
+              setUser(sessionData.session.user);
+            }
+          } else {
+            // Fallback to session user if getUser is not available
+            console.info('getUser method not available, using session user');
+            setUser(sessionData.session.user);
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error('Error in auth initialization:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
     };
 
-    getSession();
+    getSessionAndUser();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+      async (event, currentSession) => {
+        setSession(currentSession);
+        
+        // Try to get verified user using getUser() if available, otherwise fall back to session user
+        if (currentSession) {
+          // Check if getUser method exists on the supabase client
+          if (typeof (supabase.auth as any).getUser === 'function') {
+            try {
+              const { data: userData, error: userError } = await (supabase.auth as any).getUser();
+              if (userError) {
+                console.error('Error getting user on auth change:', userError);
+                setUser(currentSession.user);
+              } else {
+                setUser(userData.user);
+              }
+            } catch (error) {
+              console.error('Error calling getUser on auth change:', error);
+              setUser(currentSession.user);
+            }
+          } else {
+            // Fallback to session user if getUser is not available
+            setUser(currentSession.user);
+          }
+        } else {
+          setUser(null);
+        }
+        
         setIsLoading(false);
       }
     );

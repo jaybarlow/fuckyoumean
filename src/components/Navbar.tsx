@@ -34,6 +34,9 @@ export default function Navbar() {
               <Link href="/services" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
                 Services
               </Link>
+              <Link href="/blog" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
+                Blog
+              </Link>
               <Link href="/contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
                 Contact
               </Link>
@@ -104,6 +107,9 @@ export default function Navbar() {
           </Link>
           <Link href="/services" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800/50 transition-all">
             Services
+          </Link>
+          <Link href="/blog" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800/50 transition-all">
+            Blog
           </Link>
           <Link href="/contact" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800/50 transition-all">
             Contact
