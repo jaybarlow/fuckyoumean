@@ -142,7 +142,8 @@ export async function signIn(formData: FormData) {
       return { error: error.message };
     }
     
-    redirect('/profile');
+    // Return success instead of redirecting directly
+    return { success: true };
   } catch (error: any) {
     return { error: error.message || 'An error occurred during sign in' };
   }
