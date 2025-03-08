@@ -12,14 +12,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // Cloudflare Pages compatibility
-  // Uncomment the following if you encounter issues with Cloudflare Pages
-  /*
-  experimental: {
-    runtime: 'experimental-edge',
-  },
-  */
-  
   // Optimize images
   images: {
     domains: ['yrjuwkopkdwkcqvbnzbc.supabase.co'],
