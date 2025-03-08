@@ -1,6 +1,11 @@
+"use client";
+
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Navbar() {
+  const { user } = useAuth();
+
   return (
     <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-md z-50 border-b border-gray-800/50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,6 +29,15 @@ export default function Navbar() {
               <Link href="/contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
                 Contact
               </Link>
+              {user ? (
+                <Link href="/profile" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
+                  Profile
+                </Link>
+              ) : (
+                <Link href="/login" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
+                  Login
+                </Link>
+              )}
             </div>
           </div>
         </div>

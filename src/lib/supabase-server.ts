@@ -1,6 +1,5 @@
-'use client';
-
-import { createBrowserClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
 
 // Check if Supabase URL and anon key are valid
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -17,7 +16,7 @@ const isValidUrl = (url: string) => {
 };
 
 // Create a dummy client if credentials are invalid
-const createDummyClient = () => {
+const createDummyServerClient = (cookieStore: any) => {
   console.error(
     'Invalid Supabase credentials. Please update your .env.local file with valid credentials.'
   );
@@ -29,10 +28,7 @@ const createDummyClient = () => {
       signInWithPassword: () => Promise.resolve({ data: { session: null }, error: { message: 'Invalid Supabase credentials' } }),
       signUp: () => Promise.resolve({ data: { session: null }, error: { message: 'Invalid Supabase credentials' } }),
       signOut: () => Promise.resolve({ error: null }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-      admin: {
-        updateUserById: () => Promise.resolve({ error: { message: 'This is a development feature and requires Supabase configuration' } }),
-      }
+      exchangeCodeForSession: () => Promise.resolve({ data: { session: null }, error: null }),
     },
     from: () => ({
       select: () => ({
@@ -45,26 +41,32 @@ const createDummyClient = () => {
   };
 };
 
-// Create the Supabase client with validation
-const supabaseClient = !supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)
-  ? createDummyClient()
-  : createBrowserClient(supabaseUrl, supabaseAnonKey);
-
-// Add development-only admin functions
-if (process.env.NODE_ENV === 'development' && !supabaseClient.auth.admin) {
-  // @ts-ignore - Add mock admin functions for development
-  supabaseClient.auth.admin = {
-    updateUserById: (userId: string, attributes: any) => {
-      console.log('Development mode: Simulating user confirmation', { userId, attributes });
-      // In development, redirect to Supabase dashboard
-      window.open('https://app.supabase.com/project/yrjuwkopkdwkcqvbnzbc/auth/users', '_blank');
-      return Promise.resolve({ 
-        error: { 
-          message: 'In development mode, please confirm users through the Supabase dashboard' 
-        } 
-      });
+export function createServerSupabaseClient() {
+  const cookieStore = cookies();
+  
+  // Return dummy client if credentials are invalid
+  if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
+    return createDummyServerClient(cookieStore);
+  }
+  
+  return createServerClient(
+    supabaseUrl,
+    supabaseAnonKey,
+    {
+      cookies: {
+        async get(name: string) {
+          const cookies = await cookieStore;
+          return cookies.get(name)?.value;
+        },
+        async set(name: string, value: string, options: any) {
+          const cookies = await cookieStore;
+          cookies.set({ name, value, ...options });
+        },
+        async remove(name: string, options: any) {
+          const cookies = await cookieStore;
+          cookies.delete({ name, ...options });
+        },
+      },
     }
-  };
-}
-
-export const supabase = supabaseClient; 
+  );
+} 
