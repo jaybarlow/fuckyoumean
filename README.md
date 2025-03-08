@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ShadowSite - Next.js TypeScript Shadow Website
+
+A modern, sleek website with shadow effects and smooth animations built with Next.js and TypeScript.
+
+## Features
+
+- Dark theme with shadow effects
+- Responsive design
+- Smooth animations with Framer Motion
+- Form validation with Zod and React Hook Form
+- TypeScript for type safety
+- Modern UI components
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18.x or later
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd fuckyoumean
+```
+
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the website.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Testing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses Jest and React Testing Library for testing. The following test scripts are available:
 
-## Learn More
+### Running Tests
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Run all tests
+npm test
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Run tests in watch mode
+npm run test:watch
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run tests with coverage report
+npm run test:coverage
+```
 
-## Deploy on Vercel
+### Test Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Unit tests for components are in `src/__tests__/components/`
+- Validation schema tests are in `src/__tests__/lib/validations/`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Writing Tests
+
+When writing tests, follow these guidelines:
+
+1. **Component Tests**: Test the rendering and behavior of components
+2. **Validation Tests**: Test the validation logic for forms
+3. **Mock Dependencies**: Use Jest mocks for external dependencies
+
+Example component test:
+```tsx
+import { render, screen } from '@testing-library/react';
+import MyComponent from '@/components/MyComponent';
+
+describe('MyComponent', () => {
+  it('renders correctly', () => {
+    render(<MyComponent />);
+    expect(screen.getByText('Expected Text')).toBeInTheDocument();
+  });
+});
+```
+
+## Project Structure
+
+- `src/app/`: Next.js App Router pages
+- `src/components/`: Reusable UI components
+- `src/lib/`: Utility functions and validation schemas
+- `src/__tests__/`: Test files
+
+## Technologies Used
+
+- Next.js 15.x
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- React Hook Form
+- Zod
+- Jest
+- React Testing Library
