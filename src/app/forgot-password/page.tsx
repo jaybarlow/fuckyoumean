@@ -17,10 +17,10 @@ export default function ForgotPasswordPage() {
     try {
       const result = await resetPassword(formData);
       
-      if (result.error) {
+      if (!result.success) {
         setError(result.error);
-      } else if (result.success) {
-        setSuccess(result.success);
+      } else if (result.message) {
+        setSuccess(result.message);
       }
     } catch (e: any) {
       setError(e.message || 'An error occurred');

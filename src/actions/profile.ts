@@ -1,8 +1,11 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { createServerClient } from '@supabase/ssr';
 import { revalidatePath } from 'next/cache';
+import { 
+  createServerSupabaseClient, 
+  handleServerActionError,
+  ServerActionResponse 
+} from '@/lib/supabase-server-utils';
 
 // Validate URL format
 const isValidUrl = (url: string) => {
@@ -14,44 +17,18 @@ const isValidUrl = (url: string) => {
   }
 };
 
-export async function updateProfile(formData: FormData) {
-  // Check if Supabase URL and anon key are valid
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  // If credentials are invalid, return error
-  if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
-    return { error: 'Invalid Supabase configuration. Please check your environment variables.' };
-  }
-  
-  const cookieStore = cookies();
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookies: {
-        async get(name: string) {
-          const cookies = await cookieStore;
-          return cookies.get(name)?.value;
-        },
-        async set(name: string, value: string, options: any) {
-          const cookies = await cookieStore;
-          cookies.set({ name, value, ...options });
-        },
-        async remove(name: string, options: any) {
-          const cookies = await cookieStore;
-          cookies.delete({ name, ...options });
-        },
-      },
-    }
-  );
-  
+export async function updateProfile(formData: FormData): Promise<ServerActionResponse> {
   try {
-    // Get the authenticated user (more secure than using session)
+    const supabase = await createServerSupabaseClient();
+    
+    // Get the authenticated user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     
     if (userError || !user) {
-      return { error: 'Not authenticated' };
+      return { 
+        success: false, 
+        error: 'Not authenticated' 
+      };
     }
     
     const userId = user.id;
@@ -91,14 +68,21 @@ export async function updateProfile(formData: FormData) {
         .eq('id', userId);
     }
     
-    if (result.error) throw result.error;
+    if (result.error) {
+      return {
+        success: false,
+        error: result.error.message
+      };
+    }
     
     // Revalidate the profile page to show updated data
     revalidatePath('/profile');
     
-    return { success: 'Profile updated successfully!' };
+    return { 
+      success: true, 
+      message: 'Profile updated successfully!' 
+    };
   } catch (error: any) {
-    console.error('Profile update error:', error);
-    return { error: error.message || 'Error updating profile' };
+    return handleServerActionError(error);
   }
 } 

@@ -31,10 +31,10 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
     try {
       const result = await updateProfile(formData);
       
-      if (result.error) {
+      if (!result.success) {
         setError(result.error);
-      } else if (result.success) {
-        setSuccess(result.success);
+      } else if (result.message) {
+        setSuccess(result.message);
       }
     } catch (e: any) {
       setError(e.message || 'An error occurred');

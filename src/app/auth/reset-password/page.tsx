@@ -19,10 +19,12 @@ export default function ResetPasswordPage() {
     try {
       const result = await updatePassword(formData);
       
-      if (result.error) {
+      if (!result.success) {
         setError(result.error);
-      } else if (result.success) {
-        setSuccess(result.success);
+      } else {
+        if (result.message) {
+          setSuccess(result.message);
+        }
         // Redirect to login after 2 seconds
         setTimeout(() => {
           router.push('/login');

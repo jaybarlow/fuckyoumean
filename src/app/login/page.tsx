@@ -47,6 +47,9 @@ export default function LoginPage() {
         
         if (result.success) {
           setShowDevOptions(true);
+          if (result.message) {
+            setSuccess(result.message);
+          }
         }
       } else {
         result = await signIn(formData);
@@ -58,16 +61,13 @@ export default function LoginPage() {
         }
       }
       
-      if (result.error) {
+      if (!result.success) {
         setError(result.error);
         if (result.message) {
           setSuccess(result.message);
         } else {
           setSuccess(null);
         }
-      } else if (result.success) {
-        setSuccess(result.success);
-        setError(null);
       }
     } catch (e: any) {
       setError(e.message || 'An error occurred');
@@ -83,15 +83,17 @@ export default function LoginPage() {
     try {
       const result = await confirmUserManually(email);
       
-      if (result.error) {
+      if (!result.success) {
         setError(result.error);
         if (result.message) {
           setSuccess(result.message);
         } else {
           setSuccess(null);
         }
-      } else if (result.success) {
-        setSuccess(result.success);
+      } else {
+        if (result.message) {
+          setSuccess(result.message);
+        }
         setError(null);
         setIsSignUp(false);
       }
