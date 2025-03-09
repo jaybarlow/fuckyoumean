@@ -186,6 +186,82 @@ describe('MyComponent', () => {
 - `src/__tests__/`: Test files
 - `src/middleware.ts`: Next.js middleware for route protection
 
+## Complete File Structure
+
+```
+├── .env.local                      # Environment variables
+├── .eslintrc.json                  # ESLint configuration
+├── .git/                           # Git repository
+├── .gitignore                      # Git ignore file
+├── .next/                          # Next.js build output
+├── .swc/                           # SWC compiler cache
+├── README.md                       # Project documentation
+├── eslint.config.mjs               # ESLint configuration
+├── jest.config.js                  # Jest configuration
+├── jest.setup.js                   # Jest setup file
+├── next-env.d.ts                   # Next.js TypeScript declarations
+├── next.config.js                  # Next.js configuration
+├── next.config.ts                  # Next.js TypeScript configuration
+├── node_modules/                   # Dependencies
+├── package-lock.json               # Package lock file
+├── package.json                    # Package configuration
+├── postcss.config.mjs              # PostCSS configuration
+├── public/                         # Static assets
+│   ├── file.svg                    # File icon
+│   ├── globe.svg                   # Globe icon
+│   ├── next.svg                    # Next.js logo
+│   ├── vercel.svg                  # Vercel logo
+│   └── window.svg                  # Window icon
+├── src/                            # Source code
+│   ├── __tests__/                  # Test files
+│   │   ├── components/             # Component tests
+│   │   └── lib/                    # Library tests
+│   ├── actions/                    # Server actions
+│   │   ├── auth.ts                 # Authentication actions
+│   │   └── profile.ts              # Profile actions
+│   ├── app/                        # Next.js App Router
+│   │   ├── about/                  # About page
+│   │   ├── auth/                   # Auth-related pages
+│   │   ├── blog/                   # Blog page
+│   │   ├── contact/                # Contact page
+│   │   ├── forgot-password/        # Password reset page
+│   │   ├── login/                  # Login page
+│   │   ├── profile/                # Profile page
+│   │   ├── services/               # Services page
+│   │   ├── favicon.ico             # Favicon
+│   │   ├── globals.css             # Global styles
+│   │   ├── layout.tsx              # Root layout
+│   │   └── page.tsx                # Home page
+│   ├── components/                 # UI components
+│   │   ├── AnimatedCard.tsx        # Animated card component
+│   │   ├── ContactForm.tsx         # Contact form component
+│   │   ├── FeatureCard.tsx         # Feature card component
+│   │   ├── Features.tsx            # Features section component
+│   │   ├── Footer.tsx              # Footer component
+│   │   ├── Hero.tsx                # Hero section component
+│   │   ├── Navbar.tsx              # Navigation bar component
+│   │   ├── ProfileForm.tsx         # Profile form component
+│   │   └── SimpleCard.tsx          # Simple card component
+│   ├── context/                    # React contexts
+│   │   └── AuthContext.tsx         # Authentication context
+│   ├── lib/                        # Utility functions
+│   │   ├── supabase-server-utils.ts # Server-side Supabase utilities
+│   │   ├── supabase-server.ts      # Server-side Supabase client
+│   │   ├── supabase.ts             # Client-side Supabase client
+│   │   └── validations/            # Validation schemas
+│   │       └── contact.ts          # Contact form validation
+│   ├── middleware.ts               # Next.js middleware
+│   └── setupTests.ts               # Test setup
+├── supabase/                       # Supabase configuration
+│   ├── migrations/                 # Database migrations
+│   │   ├── 20240101000000_profiles_rls.sql # Row-level security setup
+│   │   └── 20240715_initial_schema.sql     # Initial database schema
+│   ├── fix_profiles_rls.sql        # RLS fix script
+│   └── simple_fix.sql              # Simple fix script
+├── SUPABASE_RLS_SETUP.md           # Supabase RLS documentation
+└── tsconfig.json                   # TypeScript configuration
+```
+
 ## Technologies Used
 
 - Next.js 15.x (App Router)
