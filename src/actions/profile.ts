@@ -47,47 +47,11 @@ export async function updateProfile(formData: FormData): Promise<ServerActionRes
     // Check if a new avatar was uploaded
     if (avatarFile && avatarFile.size > 0) {
       try {
-        // First, check if the avatars bucket exists
-        const { data: buckets, error: bucketsError } = await supabase
-          .storage
-          .listBuckets();
-        
-        if (bucketsError) {
-          console.error('Error listing buckets:', bucketsError);
-          return {
-            success: false,
-            error: `Error checking storage buckets: ${bucketsError.message}`
-          };
-        }
-        
-        // Check if avatars bucket exists
-        const avatarsBucket = buckets?.find(bucket => bucket.name === 'avatars');
-        
-        if (!avatarsBucket) {
-          console.error('Avatars bucket not found, attempting to create it');
-          
-          // Try to create the bucket
-          const { error: createBucketError } = await supabase
-            .storage
-            .createBucket('avatars', {
-              public: true,
-              fileSizeLimit: 2 * 1024 * 1024 // 2MB
-            });
-          
-          if (createBucketError) {
-            console.error('Error creating avatars bucket:', createBucketError);
-            return {
-              success: false,
-              error: `Error creating avatars bucket: ${createBucketError.message}`
-            };
-          }
-        }
-        
         // Generate a unique filename
         const fileExt = avatarFile.name.split('.').pop();
         const fileName = `${userId}-${Date.now()}.${fileExt}`;
         
-        // Upload the file to Supabase Storage
+        // Try to upload the file to Supabase Storage
         const { data: uploadData, error: uploadError } = await supabase
           .storage
           .from('avatars')
@@ -98,6 +62,16 @@ export async function updateProfile(formData: FormData): Promise<ServerActionRes
         
         if (uploadError) {
           console.error('Error uploading avatar:', uploadError);
+          
+          // If the error is because the bucket doesn't exist, return a more helpful message
+          if (uploadError.message.includes('bucket not found') || 
+              uploadError.message.includes('does not exist')) {
+            return {
+              success: false,
+              error: 'The avatars storage bucket has not been set up. Please contact the administrator to set up the storage bucket.'
+            };
+          }
+          
           return {
             success: false,
             error: `Error uploading avatar: ${uploadError.message}`
