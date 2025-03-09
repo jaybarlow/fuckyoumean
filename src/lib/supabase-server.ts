@@ -25,6 +25,7 @@ const createDummyServerClient = (cookieStore: any) => {
   return {
     auth: {
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
       signInWithPassword: () => Promise.resolve({ data: { session: null }, error: { message: 'Invalid Supabase credentials' } }),
       signUp: () => Promise.resolve({ data: { session: null }, error: { message: 'Invalid Supabase credentials' } }),
       signOut: () => Promise.resolve({ error: null }),

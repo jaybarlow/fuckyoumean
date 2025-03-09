@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
-import { contactFormSchema, type ContactFormValues } from '@/lib/validations/contact';
+import { z } from 'zod';
+import { contactFormSchema } from '@/lib/validations/contact';
+import { ContactFormValues } from '@/types/forms';
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);

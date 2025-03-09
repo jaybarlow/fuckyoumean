@@ -12,6 +12,4 @@ export const contactFormSchema = z.object({
   }).max(500, {
     message: "Message must not be longer than 500 characters.",
   }),
-});
-
-export type ContactFormValues = z.infer<typeof contactFormSchema>; 
+}); 

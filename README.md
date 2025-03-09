@@ -73,9 +73,9 @@ A modern shadow-themed website built with Next.js, TypeScript, and Supabase for 
 
 The application implements several security best practices:
 
-1. **Secure User Verification**: Uses Supabase's `getUser()` method when available to securely verify the user on the client side, with a fallback to session user for backward compatibility.
+1. **Secure User Verification**: Uses Supabase's `getUser()` method to securely verify the user on the server and client side, ensuring that user data is authenticated by contacting the Supabase Auth server rather than relying on potentially insecure data from cookies.
 2. **Server-Side Session Handling**: Middleware uses `getSession()` for efficient authentication checks without exposing user data.
-3. **Server Component Security**: Comments in server components highlight the need for additional verification in production environments.
+3. **Server Component Security**: Server components use `getUser()` for secure user verification when accessing or displaying user data.
 4. **Graceful Degradation**: The authentication context includes fallback mechanisms and proper error handling to ensure security without breaking functionality.
 5. **Type Safety**: TypeScript is used throughout the application to prevent type-related security issues.
 6. **Form Validation**: Both client-side and server-side validation using Zod schemas.
@@ -183,6 +183,12 @@ describe('MyComponent', () => {
 - `src/actions/`: Server actions
   - `auth.ts`: Authentication-related server actions
   - `profile.ts`: Profile-related server actions
+- `src/types/`: Shared type definitions
+  - `auth.ts`: Authentication-related types
+  - `api.ts`: API and server action types
+  - `components.ts`: React component props types
+  - `forms.ts`: Form-related types
+  - `index.ts`: Type re-exports
 - `src/__tests__/`: Test files
 - `src/middleware.ts`: Next.js middleware for route protection
 
@@ -251,6 +257,12 @@ describe('MyComponent', () => {
 │   │   └── validations/            # Validation schemas
 │   │       └── contact.ts          # Contact form validation
 │   ├── middleware.ts               # Next.js middleware
+│   ├── types/                      # Shared type definitions
+│   │   ├── api.ts                  # API and server action types
+│   │   ├── auth.ts                 # Authentication-related types
+│   │   ├── components.ts           # React component props types
+│   │   ├── forms.ts                # Form-related types
+│   │   └── index.ts                # Type re-exports
 │   └── setupTests.ts               # Test setup
 ├── supabase/                       # Supabase configuration
 │   ├── migrations/                 # Database migrations

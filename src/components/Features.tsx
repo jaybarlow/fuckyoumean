@@ -1,4 +1,6 @@
 import SimpleCard from './SimpleCard';
+import FeatureCard from './FeatureCard';
+import { Feature } from '@/types/components';
 
 export default function Features() {
   const features = [

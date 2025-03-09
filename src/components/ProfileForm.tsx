@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { updateProfile } from '@/actions/profile';
+import { ProfileFormProps } from '@/types/components';
 
 interface Profile {
   id: string;
@@ -11,11 +12,6 @@ interface Profile {
   avatar_url: string;
   website: string;
   updated_at: string;
-}
-
-interface ProfileFormProps {
-  user: User;
-  profile: Profile | null;
 }
 
 export default function ProfileForm({ user, profile }: ProfileFormProps) {

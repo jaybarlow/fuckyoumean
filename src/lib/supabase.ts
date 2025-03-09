@@ -54,11 +54,12 @@ const supabaseClient = !supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseU
 if (process.env.NODE_ENV === 'development' && !supabaseClient.auth.admin) {
   // @ts-ignore - Add mock admin functions for development
   supabaseClient.auth.admin = {
-    updateUserById: (userId: string, attributes: any) => {
-      console.log('Development mode: Simulating user confirmation', { userId, attributes });
+    updateUserById: () => {
+      console.log('Development mode: Simulating user confirmation');
       // In development, redirect to Supabase dashboard
       window.open('https://app.supabase.com/project/yrjuwkopkdwkcqvbnzbc/auth/users', '_blank');
       return Promise.resolve({ 
+        data: { user: null },
         error: { 
           message: 'In development mode, please confirm users through the Supabase dashboard' 
         } 

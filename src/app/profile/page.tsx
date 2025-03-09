@@ -7,9 +7,6 @@ export default async function ProfilePage() {
   const supabase = createServerSupabaseClient();
   
   // Get the user session
-  // NOTE: In server components, we're using getSession() directly.
-  // For better security in production, consider implementing a server-side
-  // verification of the session using Supabase Admin or Edge Functions.
   const { data: { session } } = await supabase.auth.getSession();
   
   // If no session, redirect to login
@@ -17,11 +14,19 @@ export default async function ProfilePage() {
     redirect('/login');
   }
   
+  // Get verified user data
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  
+  if (userError || !user) {
+    console.error('Error getting verified user:', userError?.message);
+    redirect('/login');
+  }
+  
   // Fetch user profile
   const { data: profile, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single();
   
   if (error) {
@@ -46,7 +51,7 @@ export default async function ProfilePage() {
           </p>
         </div>
         
-        <ProfileForm user={session.user} profile={profile} />
+        <ProfileForm user={user} profile={profile} />
         
         <div className="text-center mt-8">
           <form action={signOut}>

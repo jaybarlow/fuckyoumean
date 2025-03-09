@@ -3,15 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
-
-type AuthContextType = {
-  user: User | null;
-  session: Session | null;
-  isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string) => Promise<{ error: any }>;
-  signOut: () => Promise<void>;
-};
+import { AuthContextType } from '@/types/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,57 +14,75 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Get session and verified user from Supabase
-    const getSessionAndUser = async () => {
+    async function getSessionAndUser() {
       try {
-        // Get session
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) {
-          console.error('Error getting session:', sessionError);
-          setIsLoading(false);
+        setIsLoading(true);
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setSession(null);
+          setUser(null);
           return;
         }
         
-        setSession(sessionData.session);
-        
-        // Get verified user using getUser() for better security
-        if (sessionData.session) {
-          const { data: userData, error: userError } = await supabase.auth.getUser();
-          if (userError) {
-            console.error('Error getting user:', userError);
+        // If we have a session, try to get the user with getUser() if available
+        if (session) {
+          if ('getUser' in supabase.auth) {
+            const { data: userData, error: userError } = await supabase.auth.getUser();
+            
+            if (userError) {
+              console.error('Error getting user:', userError);
+              // Fall back to session user if there's an error
+              setUser(session.user);
+            } else {
+              setUser(userData.user);
+            }
           } else {
-            setUser(userData.user);
+            // Fall back to session user if getUser is not available
+            setUser(session.user);
           }
+          
+          setSession(session);
         } else {
+          setSession(null);
           setUser(null);
         }
       } catch (error) {
-        console.error('Error in auth initialization:', error);
+        console.error('Error in getSessionAndUser:', error);
+        setSession(null);
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
-    };
+    }
 
     getSessionAndUser();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, currentSession) => {
-        setSession(currentSession);
+      async (event, session) => {
+        setSession(session);
         
-        // Get verified user using getUser() when auth state changes
-        if (currentSession) {
-          const { data: userData, error: userError } = await supabase.auth.getUser();
-          if (userError) {
-            console.error('Error getting user on auth change:', userError);
-            setUser(null);
+        if (session) {
+          // Try to get the user with getUser() if available
+          if ('getUser' in supabase.auth) {
+            const { data: userData, error: userError } = await supabase.auth.getUser();
+            
+            if (userError) {
+              console.error('Error getting user:', userError);
+              // Fall back to session user if there's an error
+              setUser(session.user);
+            } else {
+              setUser(userData.user);
+            }
           } else {
-            setUser(userData.user);
+            // Fall back to session user if getUser is not available
+            setUser(session.user);
           }
         } else {
           setUser(null);
         }
-        
-        setIsLoading(false);
       }
     );
 

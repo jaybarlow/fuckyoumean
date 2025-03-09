@@ -1,5 +1,9 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
+import { ServerActionResponse } from '@/types/api';
+
+// Re-export the ServerActionResponse type
+export type { ServerActionResponse };
 
 // Validate URL format
 export const isValidUrl = (url: string) => {
@@ -10,11 +14,6 @@ export const isValidUrl = (url: string) => {
     return false;
   }
 };
-
-// Create a type-safe response object
-export type ServerActionResponse<T = undefined> = 
-  | { success: true; data?: T; message?: string }
-  | { success: false; error: string; message?: string };
 
 // Create a server-side Supabase client
 export async function createServerSupabaseClient() {
