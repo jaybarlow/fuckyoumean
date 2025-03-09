@@ -3,13 +3,18 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
+interface PublicProfilePageProps {
+  params: {
+    username: string;
+  };
+}
+
 export default async function PublicProfilePage({
-  params
-}: {
-  params: { username: string }
-}) {
+  params,
+}: PublicProfilePageProps) {
+  // Ensure params is properly awaited
+  const username = params.username;
   const supabase = createServerSupabaseClient();
-  const { username } = params;
   
   // Fetch profile by username
   const { data: profile, error } = await supabase
