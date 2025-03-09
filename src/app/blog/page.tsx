@@ -62,7 +62,7 @@ const blogPosts = [
   {
     id: 6,
     title: 'Introduction to Tailwind CSS',
-    excerpt: 'Get started with the utility-first CSS framework that's changing how we style web applications.',
+    excerpt: 'Get started with the utility-first CSS framework that\'s changing how we style web applications.',
     date: 'August 5, 2023',
     author: 'Alex Johnson',
     slug: 'introduction-to-tailwind',
