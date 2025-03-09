@@ -5,12 +5,17 @@ ADD COLUMN IF NOT EXISTS twitter TEXT,
 ADD COLUMN IF NOT EXISTS linkedin TEXT,
 ADD COLUMN IF NOT EXISTS github TEXT;
 
--- Update RLS policies to include the new columns
-ALTER POLICY "Public profiles are viewable by everyone." 
+-- Drop existing policies
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON profiles;
+DROP POLICY IF EXISTS "Users can insert their own profile." ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile." ON profiles;
+
+-- Recreate policies
+CREATE POLICY "Public profiles are viewable by everyone." 
 ON profiles FOR SELECT USING (true);
 
-ALTER POLICY "Users can insert their own profile." 
+CREATE POLICY "Users can insert their own profile." 
 ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
-ALTER POLICY "Users can update own profile." 
+CREATE POLICY "Users can update own profile." 
 ON profiles FOR UPDATE USING (auth.uid() = id); 
