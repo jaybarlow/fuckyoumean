@@ -17,6 +17,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function getSessionAndUser() {
       try {
         setIsLoading(true);
+        
+        // Check for session
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -26,25 +28,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
         
-        // If we have a session, try to get the user with getUser() if available
+        console.log('Session check result:', { session });
+        
+        // If we have a session, try to get the user
         if (session) {
-          if ('getUser' in supabase.auth) {
-            const { data: userData, error: userError } = await supabase.auth.getUser();
+          try {
+            // Use type assertion to handle potential missing method in dummy client
+            const auth = supabase.auth as any;
+            const { data: userData, error: userError } = await auth.getUser();
             
             if (userError) {
               console.error('Error getting user:', userError);
               // Fall back to session user if there's an error
               setUser(session.user);
+              console.log('Using session user as fallback:', session.user);
             } else {
               setUser(userData.user);
+              console.log('Got user from getUser():', userData.user);
             }
-          } else {
-            // Fall back to session user if getUser is not available
+            
+            setSession(session);
+          } catch (userError) {
+            console.error('Exception getting user:', userError);
+            // Fall back to session user if there's an exception
             setUser(session.user);
+            setSession(session);
           }
-          
-          setSession(session);
         } else {
+          console.log('No session found');
           setSession(null);
           setUser(null);
         }
@@ -62,25 +73,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setSession(session);
+        console.log('Auth state changed:', { event, session });
         
         if (session) {
-          // Try to get the user with getUser() if available
-          if ('getUser' in supabase.auth) {
-            const { data: userData, error: userError } = await supabase.auth.getUser();
+          setSession(session);
+          
+          try {
+            // Use type assertion to handle potential missing method in dummy client
+            const auth = supabase.auth as any;
+            const { data: userData, error: userError } = await auth.getUser();
             
             if (userError) {
-              console.error('Error getting user:', userError);
+              console.error('Error getting user on auth change:', userError);
               // Fall back to session user if there's an error
               setUser(session.user);
             } else {
               setUser(userData.user);
             }
-          } else {
-            // Fall back to session user if getUser is not available
+          } catch (userError) {
+            console.error('Exception getting user on auth change:', userError);
+            // Fall back to session user if there's an exception
             setUser(session.user);
           }
         } else {
+          setSession(null);
           setUser(null);
         }
       }
