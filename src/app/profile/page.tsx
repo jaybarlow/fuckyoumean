@@ -3,10 +3,7 @@ import { redirect } from 'next/navigation';
 import ProfileForm from '@/components/ProfileForm';
 import { signOut } from '@/actions/auth';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-
-// Dynamically import the client component
-const UsernameRequiredAlert = dynamic(() => import('@/components/UsernameRequiredAlert'), { ssr: false });
+import ProfileHeader from '@/components/ProfileHeader';
 
 export default async function ProfilePage() {
   const supabase = createServerSupabaseClient();
@@ -47,16 +44,7 @@ export default async function ProfilePage() {
       </div>
       
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-white mb-6">
-            Your Profile
-          </h1>
-          <p className="text-xl text-gray-300 mb-8">
-            Manage your account information
-          </p>
-        </div>
-        
-        {!profile?.username && <UsernameRequiredAlert />}
+        <ProfileHeader profile={profile} />
         
         <ProfileForm user={user} profile={profile} />
         
