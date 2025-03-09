@@ -33,16 +33,67 @@ export async function updateProfile(formData: FormData): Promise<ServerActionRes
     
     const userId = user.id;
     const username = formData.get('username') as string;
-    const fullName = formData.get('fullName') as string;
+    const full_name = formData.get('full_name') as string;
     const website = formData.get('website') as string;
-    const avatarUrl = formData.get('avatarUrl') as string;
+    const bio = formData.get('bio') as string;
+    const twitter = formData.get('twitter') as string;
+    const linkedin = formData.get('linkedin') as string;
+    const github = formData.get('github') as string;
+    
+    // Handle avatar file upload
+    const avatarFile = formData.get('avatar') as File;
+    let avatar_url = '';
+    
+    // Check if a new avatar was uploaded
+    if (avatarFile && avatarFile.size > 0) {
+      // Generate a unique filename
+      const fileExt = avatarFile.name.split('.').pop();
+      const fileName = `${userId}-${Date.now()}.${fileExt}`;
+      
+      // Upload the file to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase
+        .storage
+        .from('avatars')
+        .upload(fileName, avatarFile, {
+          cacheControl: '3600',
+          upsert: true
+        });
+      
+      if (uploadError) {
+        return {
+          success: false,
+          error: `Error uploading avatar: ${uploadError.message}`
+        };
+      }
+      
+      // Get the public URL
+      const { data: { publicUrl } } = supabase
+        .storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+      
+      avatar_url = publicUrl;
+    } else {
+      // If no new avatar, get the current one from the profile
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', userId)
+        .single();
+      
+      avatar_url = currentProfile?.avatar_url || '';
+    }
     
     const updates = {
       id: userId,
       username,
-      full_name: fullName,
+      full_name,
       website,
-      avatar_url: avatarUrl,
+      avatar_url,
+      bio,
+      twitter,
+      linkedin,
+      github,
       updated_at: new Date().toISOString(),
     };
     

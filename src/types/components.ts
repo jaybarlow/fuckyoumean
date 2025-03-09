@@ -29,6 +29,10 @@ export interface Profile {
   avatar_url: string;
   website: string;
   updated_at: string;
+  bio?: string;
+  twitter?: string;
+  linkedin?: string;
+  github?: string;
 }
 
 export interface ProfileFormProps {
