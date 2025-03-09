@@ -17,6 +17,25 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Determine what to show in the auth section
+  const renderAuthLink = (isMobile = false) => {
+    const mobileClass = isMobile ? "mr-2" : "";
+    
+    if (user) {
+      return (
+        <Link href="/profile" className={`text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all ${mobileClass}`}>
+          Profile
+        </Link>
+      );
+    } else {
+      return (
+        <Link href="/login" className={`text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all ${mobileClass}`}>
+          Login
+        </Link>
+      );
+    }
+  };
+
   return (
     <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-md z-50 border-b border-gray-800/50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,29 +64,13 @@ export default function Navbar() {
               <Link href="/contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
                 Contact
               </Link>
-              {!isLoading && (user ? (
-                <Link href="/profile" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
-                  Profile
-                </Link>
-              ) : (
-                <Link href="/login" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
-                  Login
-                </Link>
-              ))}
+              {renderAuthLink()}
             </div>
           </div>
           
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            {!isLoading && (user ? (
-              <Link href="/profile" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all mr-2">
-                Profile
-              </Link>
-            ) : (
-              <Link href="/login" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all mr-2">
-                Login
-              </Link>
-            ))}
+            {renderAuthLink(true)}
             <button
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800/50 focus:outline-none"
