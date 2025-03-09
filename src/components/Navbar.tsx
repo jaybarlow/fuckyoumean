@@ -2,11 +2,16 @@
 
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Navbar() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Navbar auth state:', { user, isLoading });
+  }, [user, isLoading]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -40,7 +45,7 @@ export default function Navbar() {
               <Link href="/contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
                 Contact
               </Link>
-              {user ? (
+              {!isLoading && (user ? (
                 <Link href="/profile" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
                   Profile
                 </Link>
@@ -48,13 +53,13 @@ export default function Navbar() {
                 <Link href="/login" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all">
                   Login
                 </Link>
-              )}
+              ))}
             </div>
           </div>
           
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            {user ? (
+            {!isLoading && (user ? (
               <Link href="/profile" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all mr-2">
                 Profile
               </Link>
@@ -62,7 +67,7 @@ export default function Navbar() {
               <Link href="/login" className="text-purple-400 hover:text-purple-300 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-800/50 transition-all mr-2">
                 Login
               </Link>
-            )}
+            ))}
             <button
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800/50 focus:outline-none"
