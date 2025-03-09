@@ -4,10 +4,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { AuthProvider } from "../context/AuthContext";
-import dynamic from "next/dynamic";
-
-// Dynamically import the AuthDebug component with no SSR
-const AuthDebug = dynamic(() => import("../components/AuthDebug"), { ssr: false });
+import ClientAuthDebugWrapper from "../components/ClientAuthDebugWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +37,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          {process.env.NODE_ENV === 'development' && <AuthDebug />}
+          <ClientAuthDebugWrapper />
         </AuthProvider>
       </body>
     </html>
