@@ -12,8 +12,8 @@ interface PublicProfilePageProps {
 export default async function PublicProfilePage({
   params,
 }: PublicProfilePageProps) {
-  // Ensure params is properly awaited
-  const username = params.username;
+  // Properly await params as required by Next.js 15
+  const { username } = await params;
   const supabase = createServerSupabaseClient();
   
   // Fetch profile by username
