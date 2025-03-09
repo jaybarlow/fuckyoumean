@@ -12,101 +12,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Initialize auth state
   useEffect(() => {
-    // Get session and verified user from Supabase
-    async function getSessionAndUser() {
+    // Check for existing session
+    const initializeAuth = async () => {
       try {
         setIsLoading(true);
         
-        // Check for session
-        const { data: { session }, error } = await supabase.auth.getSession();
+        // Get current session
+        const { data, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('Error getting session:', error);
-          setSession(null);
-          setUser(null);
           return;
         }
         
-        console.log('Session check result:', { session });
-        
-        // If we have a session, try to get the user
-        if (session) {
-          try {
-            // Use type assertion to handle potential missing method in dummy client
-            const auth = supabase.auth as any;
-            const { data: userData, error: userError } = await auth.getUser();
-            
-            if (userError) {
-              console.error('Error getting user:', userError);
-              // Fall back to session user if there's an error
-              setUser(session.user);
-              console.log('Using session user as fallback:', session.user);
-            } else {
-              setUser(userData.user);
-              console.log('Got user from getUser():', userData.user);
-            }
-            
-            setSession(session);
-          } catch (userError) {
-            console.error('Exception getting user:', userError);
-            // Fall back to session user if there's an exception
-            setUser(session.user);
-            setSession(session);
-          }
-        } else {
-          console.log('No session found');
-          setSession(null);
-          setUser(null);
+        if (data?.session) {
+          setSession(data.session);
+          setUser(data.session.user);
         }
       } catch (error) {
-        console.error('Error in getSessionAndUser:', error);
-        setSession(null);
-        setUser(null);
+        console.error('Error initializing auth:', error);
       } finally {
         setIsLoading(false);
       }
-    }
-
-    getSessionAndUser();
-
-    // Listen for auth changes
+    };
+    
+    initializeAuth();
+    
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', { event, session });
-        
-        if (session) {
-          setSession(session);
-          
-          try {
-            // Use type assertion to handle potential missing method in dummy client
-            const auth = supabase.auth as any;
-            const { data: userData, error: userError } = await auth.getUser();
-            
-            if (userError) {
-              console.error('Error getting user on auth change:', userError);
-              // Fall back to session user if there's an error
-              setUser(session.user);
-            } else {
-              setUser(userData.user);
-            }
-          } catch (userError) {
-            console.error('Exception getting user on auth change:', userError);
-            // Fall back to session user if there's an exception
-            setUser(session.user);
-          }
-        } else {
-          setSession(null);
-          setUser(null);
-        }
+      (event, newSession) => {
+        console.log('Auth state changed:', event, newSession);
+        setSession(newSession);
+        setUser(newSession?.user || null);
       }
     );
-
+    
+    // Clean up subscription
     return () => {
       subscription.unsubscribe();
     };
   }, []);
 
+  // Auth methods
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error };
@@ -121,6 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  // Context value
   const value = {
     user,
     session,
