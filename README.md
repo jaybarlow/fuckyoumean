@@ -66,6 +66,16 @@ A modern shadow-themed website built with Next.js, TypeScript, and Supabase for 
 3. Users can update their profile information
 4. Authentication state is maintained across the app
 
+## Security Best Practices
+
+The application implements several security best practices:
+
+1. **Secure User Verification**: Uses Supabase's `getUser()` method when available to securely verify the user on the client side, with a fallback to session user for backward compatibility.
+2. **Server-Side Session Handling**: Middleware uses `getSession()` for efficient authentication checks without exposing user data.
+3. **Server Component Security**: Comments in server components highlight the need for additional verification in production environments.
+4. **Graceful Degradation**: The authentication context includes fallback mechanisms and proper error handling to ensure security without breaking functionality.
+5. **Type Safety**: TypeScript is used throughout the application to prevent type-related security issues.
+
 ## Database Schema
 
 ### Profiles Table
@@ -152,3 +162,4 @@ describe('MyComponent', () => {
 - Zod
 - Jest
 - React Testing Library
+- Supabase 2.49.x (Auth, Database)
