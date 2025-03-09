@@ -34,6 +34,26 @@ ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
 CREATE POLICY "Users can update own profile." 
 ON profiles FOR UPDATE USING (auth.uid() = id);
+
+-- Create avatars bucket if it doesn't exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Create policy to allow authenticated users to upload avatars
+DROP POLICY IF EXISTS "Avatar uploads" ON storage.objects;
+CREATE POLICY "Avatar uploads"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'avatars' AND
+  auth.uid() IS NOT NULL
+);
+
+-- Create policy to allow public access to avatars
+DROP POLICY IF EXISTS "Public avatar access" ON storage.objects;
+CREATE POLICY "Public avatar access"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'avatars');
 ```
 
 6. Click "Run" to execute the query
@@ -45,18 +65,11 @@ To verify that the migration was successful:
 1. Go to the "Table Editor" in the left sidebar
 2. Select the "profiles" table
 3. Check that the new columns (bio, twitter, linkedin, github) are present
+4. Go to the "Storage" section and verify that the "avatars" bucket exists
 
 ## Setting Up Storage for Avatars
 
-To set up storage for avatar uploads:
-
-1. Go to the "Storage" section in the left sidebar
-2. Click "Create a new bucket"
-3. Name the bucket "avatars"
-4. Set the following options:
-   - Public bucket: Yes (to allow public access to avatars)
-   - File size limit: 2MB (or your preferred limit)
-5. Click "Create bucket"
+**Note:** The SQL migration now automatically creates the avatars bucket and sets up the necessary policies. You don't need to manually create the bucket or policies anymore.
 
 ## Setting Up Storage Policies
 

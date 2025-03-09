@@ -18,4 +18,24 @@ CREATE POLICY "Users can insert their own profile."
 ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
 CREATE POLICY "Users can update own profile." 
-ON profiles FOR UPDATE USING (auth.uid() = id); 
+ON profiles FOR UPDATE USING (auth.uid() = id);
+
+-- Create avatars bucket if it doesn't exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Create policy to allow authenticated users to upload avatars
+DROP POLICY IF EXISTS "Avatar uploads" ON storage.objects;
+CREATE POLICY "Avatar uploads"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'avatars' AND
+  auth.uid() IS NOT NULL
+);
+
+-- Create policy to allow public access to avatars
+DROP POLICY IF EXISTS "Public avatar access" ON storage.objects;
+CREATE POLICY "Public avatar access"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'avatars'); 
