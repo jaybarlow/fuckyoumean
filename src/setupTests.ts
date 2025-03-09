@@ -8,6 +8,8 @@ declare global {
       toBeInTheDocument(): R;
       toHaveAttribute(attr: string, value?: string): R;
       toHaveClass(className: string): R;
+      toContain(text: string): R;
+      toBe(expected: any): R;
     }
   }
 } 
