@@ -274,16 +274,37 @@ describe('MyComponent', () => {
 └── tsconfig.json                   # TypeScript configuration
 ```
 
-## Technologies Used
+## Project Stack Overview
 
-- Next.js 15.x (App Router)
-- TypeScript 5.x
-- Tailwind CSS 4.x
-- Framer Motion 12.x
-- React Hook Form 7.x
-- Zod 3.x
-- Supabase 2.49.x (Auth, Database)
-- React 19.x
-- Jest 29.x
-- React Testing Library 16.x
-- Turbopack (for development)
+- **Next.js 15.x (App Router)**  
+  A React framework that simplifies routing, server-side rendering, and static site generation, with an enhanced App Router for scalable page management.
+
+- **TypeScript 5.x**  
+  A typed superset of JavaScript that improves code quality and maintainability by catching errors during development.
+
+- **Tailwind CSS 4.x**  
+  A utility-first CSS framework that speeds up styling by providing pre-built classes, reducing the need for custom CSS.
+
+- **Framer Motion 12.x**  
+  An animation library for React that enables smooth, interactive transitions and gesture-based animations.
+
+- **React Hook Form 7.x**  
+  A lightweight library for managing form state and validation using React hooks, reducing boilerplate code.
+
+- **Zod 3.x**  
+  A schema validation library that ensures runtime data adheres to defined structures and types, enhancing reliability.
+
+- **Supabase 2.49.x (Auth, Database)**  
+  A backend-as-a-service offering authentication, real-time databases, and storage, streamlining backend integration.
+
+- **React 19.x**  
+  A widely-used JavaScript library for building user interfaces with a component-based architecture and virtual DOM.
+
+- **Jest 29.x**  
+  A testing framework that provides a robust environment for writing unit and integration tests for JavaScript/TypeScript code.
+
+- **React Testing Library 16.x**  
+  A set of utilities focused on testing React components by simulating user interactions rather than implementation details.
+
+- **Turbopack**  
+  A high-performance bundler and dev server designed for Next.js, reducing build times and enhancing the development workflow.
