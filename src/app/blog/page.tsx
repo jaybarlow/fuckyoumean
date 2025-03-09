@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import BlogSearch from '@/components/BlogSearch';
 
 export const metadata: Metadata = {
-  title: 'Blog - ShadowSite',
-  description: 'Read our latest articles and updates',
+  title: 'Blog - SpliffPicks',
+  description: 'Read our latest articles and tutorials',
 };
 
 // Mock blog data - in a real app, this would come from a database or CMS

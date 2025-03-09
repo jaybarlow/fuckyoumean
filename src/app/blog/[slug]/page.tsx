@@ -126,13 +126,14 @@ export async function generateMetadata(props: { params: Params }): Promise<Metad
   
   if (!post) {
     return {
-      title: 'Post Not Found - ShadowSite',
+      title: 'Post Not Found - SpliffPicks',
+      description: 'The requested blog post could not be found',
     };
   }
   
   return {
-    title: `${post.title} - ShadowSite Blog`,
-    description: post.content.substring(0, 160).replace(/<[^>]*>/g, ''),
+    title: `${post.title} - SpliffPicks Blog`,
+    description: post.excerpt || 'Read our latest blog post',
   };
 }
 

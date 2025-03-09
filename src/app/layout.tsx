@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShadowSite - Modern Next.js Shadow Website",
-  description: "A modern shadow-themed website built with Next.js and TypeScript",
+  title: "SpliffPicks - Modern Next.js Website",
+  description: "A modern themed website built with Next.js and TypeScript",
 };
 
 export default function RootLayout({

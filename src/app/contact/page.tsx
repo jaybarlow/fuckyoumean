@@ -30,7 +30,7 @@ export default function ContactPage() {
             
             <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800/50 shadow-lg">
               <h3 className="text-xl font-bold text-white mb-4">Contact Information</h3>
-              <p className="text-gray-300 mb-2">Email: info@shadowsite.com</p>
+              <p className="text-gray-300 mb-2">Email: info@spliffpicks.com</p>
               <p className="text-gray-300 mb-2">Phone: (123) 456-7890</p>
               <p className="text-gray-300">Hours: Monday - Friday, 9am - 5pm</p>
             </div>

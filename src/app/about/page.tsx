@@ -10,31 +10,31 @@ export default function AboutPage() {
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">ShadowSite</span>
+            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">SpliffPicks</span>
           </h1>
           <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Learn more about this shadow-themed website
+            Learn more about our story and mission.
           </p>
         </div>
         
         <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-gray-800/50 shadow-lg mb-12">
-          <h2 className="text-2xl font-bold text-white mb-4">The Story</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Our Story</h2>
           <p className="text-gray-300 mb-4">
-            ShadowSite was created with the goal of providing a modern, sleek website template with beautiful shadow effects and smooth animations. I wanted to create a template that would be easy to customize and use for various projects.
+            SpliffPicks was created with the goal of providing a modern, sleek website template with beautiful effects and smooth animations. I wanted to create a template that would be easy to customize and extend for various projects.
           </p>
           <p className="text-gray-300 mb-4">
             As a solo developer, I focused on creating a template that not only looks great but also performs well. I used Next.js and TypeScript to ensure the website is fast, responsive, and type-safe.
           </p>
           <p className="text-gray-300">
-            I hope you enjoy using ShadowSite as much as I enjoyed creating it!
+            I hope you enjoy using SpliffPicks as much as I enjoyed creating it!
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800/50 shadow-lg">
-            <h3 className="text-xl font-bold text-white mb-4">My Mission</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Our Mission</h3>
             <p className="text-gray-300">
-              My mission is to provide high-quality website templates that are not only visually appealing but also performant and easy to use. I believe that good design should be accessible to everyone.
+              I hope you enjoy using SpliffPicks as much as I enjoyed creating it!
             </p>
           </div>
           <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800/50 shadow-lg">

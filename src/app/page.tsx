@@ -80,7 +80,7 @@ export default function Home() {
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to get started with <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">ShadowSite</span>?
+            Ready to get started with <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">SpliffPicks</span>?
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
             Join thousands of users who are already using our shadow website template.

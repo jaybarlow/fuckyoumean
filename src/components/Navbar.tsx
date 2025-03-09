@@ -42,7 +42,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-xl font-bold text-purple-400 hover:text-purple-300 transition-colors">
-              Shadow<span className="text-white">Site</span>
+              Spliff<span className="text-white">Picks</span>
             </Link>
           </div>
           

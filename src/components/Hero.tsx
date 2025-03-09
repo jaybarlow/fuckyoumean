@@ -11,8 +11,8 @@ export default function Hero() {
       
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
-          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">ShadowSite</span>
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">SpliffPicks</span>
         </h1>
         <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
           A modern, sleek website with shadow effects and smooth animations built with Next.js and TypeScript.
