@@ -8,6 +8,21 @@ jest.mock('next/link', () => {
   };
 });
 
+// Mock AuthContext
+jest.mock('@/context/AuthContext', () => ({
+  AuthContext: {
+    Provider: ({ children, value }: { children: React.ReactNode; value: any }) => children,
+  },
+  useAuth: () => ({
+    user: null,
+    session: null,
+    isLoading: false,
+    signIn: jest.fn(),
+    signUp: jest.fn(),
+    signOut: jest.fn(),
+  }),
+}));
+
 describe('Navbar', () => {
   it('renders the logo and navigation links', () => {
     render(<Navbar />);
@@ -16,21 +31,33 @@ describe('Navbar', () => {
     expect(screen.getByText('Shadow')).toBeInTheDocument();
     expect(screen.getByText('Site')).toBeInTheDocument();
     
-    // Check for navigation links
-    expect(screen.getByText('Home')).toBeInTheDocument();
-    expect(screen.getByText('About')).toBeInTheDocument();
-    expect(screen.getByText('Services')).toBeInTheDocument();
-    expect(screen.getByText('Contact')).toBeInTheDocument();
+    // Check for navigation links in desktop menu
+    const desktopMenu = document.querySelector('.hidden.md\\:block');
+    if (desktopMenu) {
+      expect(desktopMenu.textContent).toContain('Home');
+      expect(desktopMenu.textContent).toContain('About');
+      expect(desktopMenu.textContent).toContain('Services');
+      expect(desktopMenu.textContent).toContain('Contact');
+    } else {
+      throw new Error('Desktop menu not found');
+    }
   });
   
   it('has correct link destinations', () => {
     render(<Navbar />);
     
-    // Check href attributes
-    const homeLink = screen.getByText('Home').closest('a');
-    const aboutLink = screen.getByText('About').closest('a');
-    const servicesLink = screen.getByText('Services').closest('a');
-    const contactLink = screen.getByText('Contact').closest('a');
+    // Get desktop menu links
+    const desktopMenu = document.querySelector('.hidden.md\\:block');
+    if (!desktopMenu) {
+      throw new Error('Desktop menu not found');
+    }
+    
+    // Check href attributes for links in desktop menu
+    const links = desktopMenu.querySelectorAll('a');
+    const homeLink = Array.from(links).find(link => link.textContent === 'Home');
+    const aboutLink = Array.from(links).find(link => link.textContent === 'About');
+    const servicesLink = Array.from(links).find(link => link.textContent === 'Services');
+    const contactLink = Array.from(links).find(link => link.textContent === 'Contact');
     
     expect(homeLink).toHaveAttribute('href', '/');
     expect(aboutLink).toHaveAttribute('href', '/about');
