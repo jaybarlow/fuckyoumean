@@ -14,7 +14,8 @@
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
     "test:e2e": "start-server-and-test dev http://localhost:3001 cypress",
-    "test:e2e:headless": "start-server-and-test dev http://localhost:3001 cypress:headless"
+    "test:e2e:headless": "start-server-and-test dev http://localhost:3001 cypress:headless",
+    "test:all": "npm run lint && npm run typecheck && npm run test:coverage && npm run test:e2e:headless"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
