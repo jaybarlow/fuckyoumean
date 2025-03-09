@@ -4,14 +4,16 @@ A modern shadow-themed website built with Next.js, TypeScript, and Supabase for 
 
 ## Features
 
-- Modern design with shadow theme
-- Responsive layout
-- Fast performance with Next.js
-- TypeScript for type safety
-- User authentication with Supabase
-- User profiles with database storage
-- Dark mode by default
-- Customizable components
+- Modern design with shadow theme and animations
+- Fully responsive layout for all devices
+- Fast performance with Next.js App Router and Turbopack
+- TypeScript for type safety and better developer experience
+- User authentication with Supabase (login, signup, password reset)
+- User profiles with database storage and form validation
+- Dark mode by default with shadow effects
+- Server Actions for form submissions
+- Server Components for improved performance
+- Client-side form validation with Zod and React Hook Form
 
 ## Getting Started
 
@@ -57,14 +59,15 @@ A modern shadow-themed website built with Next.js, TypeScript, and Supabase for 
    yarn dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+6. Open [http://localhost:3001](http://localhost:3001) in your browser to see the result.
 
 ## Authentication Flow
 
 1. Users can sign up with email and password
 2. Upon signup, a profile is automatically created
 3. Users can update their profile information
-4. Authentication state is maintained across the app
+4. Authentication state is maintained across the app using AuthContext
+5. Password reset functionality is available
 
 ## Security Best Practices
 
@@ -75,6 +78,8 @@ The application implements several security best practices:
 3. **Server Component Security**: Comments in server components highlight the need for additional verification in production environments.
 4. **Graceful Degradation**: The authentication context includes fallback mechanisms and proper error handling to ensure security without breaking functionality.
 5. **Type Safety**: TypeScript is used throughout the application to prevent type-related security issues.
+6. **Form Validation**: Both client-side and server-side validation using Zod schemas.
+7. **Protected Routes**: Middleware ensures that protected routes are only accessible to authenticated users.
 
 ## Database Schema
 
@@ -147,19 +152,50 @@ describe('MyComponent', () => {
 
 ## Project Structure
 
-- `src/app/`: Next.js App Router pages
+- `src/app/`: Next.js App Router pages and layouts
+  - `page.tsx`: Home page
+  - `layout.tsx`: Root layout with AuthProvider
+  - `about/`: About page
+  - `blog/`: Blog page
+  - `contact/`: Contact page with form
+  - `login/`: Login page
+  - `profile/`: User profile page
+  - `forgot-password/`: Password reset page
+  - `auth/`: Authentication-related pages
+  - `services/`: Services page
 - `src/components/`: Reusable UI components
-- `src/lib/`: Utility functions and validation schemas
+  - `Navbar.tsx`: Navigation bar
+  - `Footer.tsx`: Footer component
+  - `Hero.tsx`: Hero section
+  - `Features.tsx`: Features section
+  - `ProfileForm.tsx`: User profile form
+  - `ContactForm.tsx`: Contact form
+  - `SimpleCard.tsx`: Simple card component
+  - `AnimatedCard.tsx`: Animated card component
+  - `FeatureCard.tsx`: Feature card component
+- `src/lib/`: Utility functions and services
+  - `supabase.ts`: Client-side Supabase client
+  - `supabase-server.ts`: Server-side Supabase client
+  - `supabase-server-utils.ts`: Utility functions for server-side Supabase
+  - `validations/`: Zod validation schemas
+- `src/context/`: React context providers
+  - `AuthContext.tsx`: Authentication context provider
+- `src/actions/`: Server actions
+  - `auth.ts`: Authentication-related server actions
+  - `profile.ts`: Profile-related server actions
 - `src/__tests__/`: Test files
+- `src/middleware.ts`: Next.js middleware for route protection
 
 ## Technologies Used
 
-- Next.js 15.x
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-- React Hook Form
-- Zod
-- Jest
-- React Testing Library
+- Next.js 15.x (App Router)
+- TypeScript 5.x
+- Tailwind CSS 4.x
+- Framer Motion 12.x
+- React Hook Form 7.x
+- Zod 3.x
 - Supabase 2.49.x (Auth, Database)
+- React 19.x
+- Jest 29.x
+- React Testing Library 16.x
+- Turbopack (for development)
