@@ -24,15 +24,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         if (error) {
           console.error('Error getting session:', error);
+          setSession(null);
+          setUser(null);
+          setIsLoading(false);
           return;
         }
+        
+        console.log('Initial session check:', data);
         
         if (data?.session) {
           setSession(data.session);
           setUser(data.session.user);
+        } else {
+          setSession(null);
+          setUser(null);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
+        setSession(null);
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -44,8 +54,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
         console.log('Auth state changed:', event, newSession);
-        setSession(newSession);
-        setUser(newSession?.user || null);
+        
+        if (newSession) {
+          setSession(newSession);
+          setUser(newSession.user);
+        } else {
+          setSession(null);
+          setUser(null);
+        }
       }
     );
     
